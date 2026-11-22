@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}BEAST OS — NEXORA{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if user %}
+<div class="app-shell">
+<aside class="sidebar">
+  <a class="brand" href="/"><span class="brand-mark">N</span><span><b>NEXORA</b><small>BEAST OS</small></span></a>
+  <div class="workspace"><span class="workspace-dot"></span><span>{{ user.company }}</span><span class="chevron">⌄</span></div>
+  <div class="nav-label">WORKSPACE</div>
+  <nav>
+    <a href="/" class="{% if request.path=='/' %}active{% endif %}"><i>◫</i> Overview</a>
+    <a href="/workforce" class="{% if request.path=='/workforce' %}active{% endif %}"><i>✳</i> AI Workforce <span class="nav-count">6</span></a>
+    <a href="/brain" class="{% if request.path=='/brain' %}active{% endif %}"><i>◈</i> Business Brain</a>
+    <a href="/opportunities" class="{% if request.path=='/opportunities' %}active{% endif %}"><i>⌁</i> Opportunity Radar</a>
+    <a href="/revenue" class="{% if request.path=='/revenue' %}active{% endif %}"><i>↗</i> Revenue Intelligence</a>
+    <a href="/simulator" class="{% if request.path=='/simulator' %}active{% endif %}"><i>⌘</i> Business Simulator</a>
+  </nav>
+  <div class="nav-label second">CONTROL</div>
+  <nav><a href="#approvals" onclick="location.href='/?focus=approvals'"><i>◎</i> Approvals</a><a href="/settings"><i>⚙</i> Settings</a></nav>
+  <div class="sidebar-bottom"><div class="online"></div><span>All systems operational</span><a href="/logout">↗</a></div>
+</aside>
+<main class="main-area">
+<header class="topbar"><div class="crumb">NEXORA <span>/</span> BEAST OS <span>/</span> <b>{% block crumb %}Overview{% endblock %}</b></div><div class="top-actions"><span class="status-pill"><span></span> DEMO WORKSPACE</span><div class="avatar">{{ user.company[:1]|upper }}</div></div></header>
+<div class="page-content">{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category,message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}{% endif %}{% endwith %}{% block content %}{% endblock %}</div>
+<footer class="footer">NEXORA © 2026 <span>BEAST OS · EARLY ACCESS PROTOTYPE</span></footer>
+</main></div>
+{% else %}{% block public %}{% endblock %}{% endif %}
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>
