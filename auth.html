@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block public %}
+<div class="auth-page"><a class="brand" href="/"><span class="brand-mark">N</span><span><b>NEXORA</b><small>BEAST OS</small></span></a><div class="auth-card">
+<div class="section-kicker">YOUR COMMAND CENTER STARTS HERE</div><h1>{% if mode=='signup' %}Create workspace{% else %}Welcome back{% endif %}</h1><p>{% if mode=='signup' %}Set up your business workspace in under a minute.{% else %}Log in to your BEAST OS workspace.{% endif %}</p>
+<form method="post">
+{% if mode=='signup' %}<label>Company name</label><input name="company" placeholder="e.g. Acme Commerce" required><label>Industry</label><select name="industry"><option>E-commerce & D2C</option><option>Startup / SaaS</option><option>Agency / Services</option><option>Retail</option><option>Other</option></select>{% endif %}
+<label>Email address</label><input type="email" name="email" placeholder="you@company.com" required><label>Password</label><input type="password" name="password" placeholder="At least 8 characters" required><button class="btn full" type="submit">{% if mode=='signup' %}Create workspace →{% else %}Log in →{% endif %}</button>
+</form><div class="auth-switch">{% if mode=='signup' %}Already have an account? <a href="/login">Log in</a>{% else %}New to BEAST OS? <a href="/signup">Create a workspace</a>{% endif %}</div>
+</div><small class="auth-foot">NEXORA · BEAST OS · PROTOTYPE</small></div>
+{% endblock %}
