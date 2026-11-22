@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><div class="section-kicker">YOUR BUSINESS AT A GLANCE</div><h1>Good to see you, {{ user.company }}.</h1><p>Here's what's happening across your command center.</p></div><div class="date-chip">◷ &nbsp; {{ now or "WORKSPACE OVERVIEW" }}</div></div>
+<div class="stat-grid">
+<div class="stat-card"><div class="stat-top"><span>ACTIVE WORKFLOWS</span><i>⌁</i></div><b>{{ counts.tasks }}</b><small>Total tasks in workspace</small><div class="stat-foot">Execution engine</div></div>
+<div class="stat-card"><div class="stat-top"><span>RUNNING NOW</span><i>✳</i></div><b>{{ counts.running }}</b><small>Tasks currently in progress</small><div class="stat-foot">AI workforce</div></div>
+<div class="stat-card"><div class="stat-top"><span>AWAITING APPROVAL</span><i>◎</i></div><b>{{ counts.pending }}</b><small>Human decision required</small><div class="stat-foot warning-text">You're in control</div></div>
+<div class="stat-card"><div class="stat-top"><span>COMPLETED TASKS</span><i>✓</i></div><b>{{ counts.completed }}</b><small>Marked complete in workspace</small><div class="stat-foot">Activity tracking</div></div>
+</div>
+<div class="dashboard-grid">
+<section class="panel command-panel"><div class="panel-heading"><div><div class="section-kicker">NATURAL LANGUAGE INTERFACE</div><h2>Command BEAST</h2><p>Describe the outcome you want. Get a structured plan.</p></div><span class="ai-tag">✳ BEAST AI</span></div>
+<div class="command-input-wrap"><textarea id="commandInput" placeholder="e.g. Find 3 ways to improve my D2C store's conversion rate without increasing ad spend..."></textarea><button id="runCommand" class="send-btn">↑</button></div><div class="prompt-chips"><button data-prompt="Create a 7-day growth plan for my business.">7-day growth plan</button><button data-prompt="Find market opportunities and competitor gaps for my business.">Find opportunities</button><button data-prompt="Review my revenue and identify potential leaks.">Revenue audit</button></div>
+<div id="commandResult" class="command-result hidden"><div class="result-head"><b>BEAST RESPONSE</b><span id="responseMode">DEMO PLANNER</span></div><div id="answerText"></div></div>
+</section>
+<section class="panel workforce-panel"><div class="panel-heading"><div><div class="section-kicker">SPECIALISED DIGITAL TEAM</div><h2>AI Workforce</h2></div><a href="/workforce" class="panel-link">View all →</a></div>
+<div class="agent-row"><span class="agent-icon purple">⌖</span><div><b>Market Researcher</b><small>Competitor & opportunity research</small></div><span class="agent-status running">Running</span></div>
+<div class="agent-row"><span class="agent-icon blue">↗</span><div><b>Growth Marketer</b><small>Campaign and content planning</small></div><span class="agent-status queued">Queued</span></div>
+<div class="agent-row"><span class="agent-icon orange">◎</span><div><b>Sales Agent</b><small>Lead prioritisation and follow-ups</small></div><span class="agent-status queued">Queued</span></div>
+<div class="agent-row"><span class="agent-icon green">◈</span><div><b>Customer Analyst</b><small>Feedback and retention insights</small></div><span class="agent-status completed">Completed</span></div>
+<div class="agent-row"><span class="agent-icon pink">⌘</span><div><b>Finance Analyst</b><small>Cash-flow and cost review</small></div><span class="agent-status idle">Standby</span></div>
+</section>
+<section class="panel task-panel"><div class="panel-heading"><div><div class="section-kicker">EXECUTION PIPELINE</div><h2>Recent tasks</h2></div><button class="panel-link" onclick="openTaskModal()">+ New task</button></div>
+<div class="task-list">{% for task in tasks %}<div class="task-row"><div class="task-main"><b>{{ task.title }}</b><small>{{ task.agent }} · {{ task.priority }} priority</small></div><select class="status-select" data-task="{{ task.id }}"><option {% if task.status=='Queued' %}selected{% endif %}>Queued</option><option {% if task.status=='Running' %}selected{% endif %}>Running</option><option {% if task.status=='Completed' %}selected{% endif %}>Completed</option><option {% if task.status=='Blocked' %}selected{% endif %}>Blocked</option></select></div>{% else %}<p class="empty">No tasks yet.</p>{% endfor %}</div></section>
+<section class="panel approvals-panel" id="approvals"><div class="panel-heading"><div><div class="section-kicker">HUMAN-IN-THE-LOOP CONTROL</div><h2>Approval center</h2></div><span class="count-bubble">{{ counts.pending }}</span></div>
+{% for item in approvals %}<div class="approval-item"><div class="approval-title"><b>{{ item.title }}</b><span class="risk {{ item.risk|lower }}">{{ item.risk }} risk</span></div><p>{{ item.detail }}</p><div class="approval-actions">{% if item.status=='Pending' %}<button class="approve-btn" data-approval="{{ item.id }}" data-action="Approved">Approve</button><button class="reject-btn" data-approval="{{ item.id }}" data-action="Rejected">Reject</button>{% else %}<span class="decision">{{ item.status }} · recorded</span>{% endif %}</div></div>{% else %}<p class="empty">Nothing waiting for approval.</p>{% endfor %}
+</section>
+<section class="panel activity-panel"><div class="panel-heading"><div><div class="section-kicker">AUDIT TRAIL</div><h2>Activity feed</h2></div><span class="live-tag">● RECENT</span></div>
+{% for item in activity %}<div class="activity-row"><span class="activity-dot {{ item.kind }}"></span><div><p>{{ item.message }}</p><small>{{ item.created_at[:16].replace('T',' ') }} UTC</small></div></div>{% else %}<p class="empty">No activity yet.</p>{% endfor %}
+</section>
+</div>
+<div class="notice"><b>Prototype notice</b> &nbsp; Metrics and initial tasks are sample workspace data. Approving an item records your decision only; no external message, payment, campaign or budget change is executed.</div>
+<div id="taskModal" class="modal hidden"><div class="modal-card"><button class="modal-close" onclick="closeTaskModal()">×</button><div class="section-kicker">EXECUTION ENGINE</div><h2>Create a task</h2><label>Task title</label><input id="newTaskTitle" placeholder="What needs to get done?"><label>Assign to</label><select id="newTaskAgent"><option>Operations Agent</option><option>Market Researcher</option><option>Growth Marketer</option><option>Sales Agent</option><option>Customer Analyst</option><option>Finance Analyst</option></select><label>Priority</label><select id="newTaskPriority"><option>Medium</option><option>High</option><option>Low</option></select><button class="btn full" onclick="createTask()">Add to workforce →</button></div></div>
+{% endblock %}
